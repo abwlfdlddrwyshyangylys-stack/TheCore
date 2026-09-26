@@ -63,8 +63,11 @@ function statusClass(status) {
   return (s === 'online' || s === 'booting' || s === 'offline') ? s : 'unknown';
 }
 
+let everAgents = false, everMissions = false;
+
 function renderAgents(data) {
-  const list = Array.isArray(data.agents) ? data.agents : [];
+  everAgents = true;
+  const list = (Array.isArray(data.agents) ? data.agents : []).filter((a) => a && typeof a === 'object');
   const box = $('#agents');
   const empty = $('#agents-empty');
   if (!box) return;
@@ -154,19 +157,26 @@ function missionClass(status) {
    Evidence may be a real URL/path OR a plain fact like "job_id=…"/"cron:…".
    Rejects foreign schemes (cron:, javascript:, …), key=value facts, anything with spaces. */
 function linkTarget(u) {
-  const s = String(u == null ? '' : u).trim();
+  let s = String(u == null ? '' : u).trim();
   if (!s) return null;
+  // lab fix: prefixed evidence — "live:https://…", "url:…", "link:…" → unwrap the value
+  const pref = s.match(/^(?:live|url|link)\s*:\s*(.+)$/i);
+  if (pref) s = pref[1].trim();
+  // lab fix: "commit:<sha>" → THE CORE repo commit page
+  const cm = s.match(/^commit\s*:\s*([0-9a-f]{7,40})$/i);
+  if (cm) return 'https://github.com/abwlfdlddrwyshyangylys-stack/TheCore/commit/' + cm[1];
   if (s.startsWith('//')) return null;              // protocol-relative → skip
   const m = s.match(/^([a-z][a-z0-9+.\-]*):/i);     // explicit scheme:
-  if (m) return ['http', 'https', 'file'].indexOf(m[1].toLowerCase()) >= 0 ? s : null;
+  if (m) return ['http', 'https'].indexOf(m[1].toLowerCase()) >= 0 ? s : null;
   if (/\s|=/.test(s)) return null;                  // "job_id=…", "schedule=0 4 * * *" → not links
-  if (s.startsWith('./') || s.startsWith('../') || s.startsWith('/')) return s;
-  if (s.includes('/') || /\.[a-z0-9]{1,6}$/i.test(s)) return s; // path-like or file name
-  return null;
+  if (s.startsWith('./') || s.startsWith('../')) return s;
+  if (/^https?:\/\//i.test(s)) return s;             // bare URL without scheme → not guessed
+  return null;                                       // paths on disk / file names → plain text (404 on Pages)
 }
 
 function renderMissions(data) {
-  const list = Array.isArray(data.missions) ? data.missions : [];
+  everMissions = true;
+  const list = (Array.isArray(data.missions) ? data.missions : []).filter((x) => x && typeof x === 'object');
   const box = $('#missions');
   const empty = $('#missions-empty');
   if (!box) return;
@@ -215,7 +225,12 @@ function renderMissions(data) {
     who.querySelector('b').textContent = safeText(m.agent);
 
     const created = document.createElement('span');
-    created.textContent = 'ایجاد: ' + safeText(m.created ? dateFmt.format(new Date(Date.parse(m.created))) : m.created);
+    let createdTxt = '';
+    if (m.created) {
+      const ct = Date.parse(m.created);
+      createdTxt = Number.isNaN(ct) ? String(m.created) : dateFmt.format(new Date(ct));
+    }
+    created.textContent = 'ایجاد: ' + (createdTxt || '—');
 
     meta.append(who, created);
 
@@ -314,7 +329,11 @@ function bootLine(text, animate) {
 }
 
 /* ---------------- main load cycle ---------------- */
+let inFlight = false;
+
 async function refresh(manual) {
+  if (inFlight && !manual) return;      // lab fix: no overlapping polls
+  inFlight = true;
   const btn = $('#btn-refresh');
   if (btn) btn.disabled = true;
   if (manual) setHealth('boot', 'در حال بازخوانی…');
@@ -338,7 +357,11 @@ async function refresh(manual) {
     setHealth('ok', 'هسته فعال — ' + online + '/' + total + ' آنلاین');
   } catch (err) {
     showError(err);
+    // lab fix: first-load failure must surface the empty-state messages (never raw blank panels)
+    if (!everAgents) { const e = $('#agents-empty'); if (e) e.hidden = false; }
+    if (!everMissions) { const e = $('#missions-empty'); if (e) e.hidden = false; }
   } finally {
+    inFlight = false;
     if (btn) btn.disabled = false;
   }
 }
@@ -447,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = $('#btn-refresh');
   if (btn) btn.addEventListener('click', () => refresh(true));
 
-  setInterval(() => refresh(false), POLL_MS);
+  setInterval(() => { if (!document.hidden) refresh(false); }, POLL_MS);  // pause polling in hidden tab
   // keep "last updated" freshness label ticking without refetching
   setInterval(() => { if (lastFetchAt) setUpdated(); }, 5000);
 

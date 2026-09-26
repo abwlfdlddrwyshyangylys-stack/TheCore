@@ -144,6 +144,8 @@ header.hud {
 .health .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
 .health[data-state="ok"] { color: var(--green); border-color: rgba(61, 255, 158, .45); }
 .health[data-state="ok"] .dot { background: var(--green); box-shadow: 0 0 10px rgba(61, 255, 158, .8); }
+.health[data-state="boot"] { color: var(--cyan); border-color: rgba(45, 226, 255, .4); }
+.health[data-state="boot"] .dot { background: var(--cyan); }
 .health[data-state="warn"] { color: var(--amber); border-color: rgba(255, 176, 46, .45); }
 .health[data-state="warn"] .dot { background: var(--amber); }
 .health[data-state="err"] { color: var(--red); border-color: rgba(255, 77, 94, .5); }
@@ -340,9 +342,14 @@ main { display: grid; gap: 22px; padding: 26px 0 40px; position: relative; z-ind
 
 /* ---------- responsive ---------- */
 @media (max-width: 720px) {
-  .hbar { gap: 12px; }
+  .hbar { gap: 10px; }
   .legend { margin-inline-start: 0; width: 100%; }
   .health { order: 5; }
+  .logo { font-size: 1rem; }
+  .bootline { display: none; }                 /* decorative — reclaimed from the phone header */
+  .hstat .k { display: none; }                 /* labels off, values (clock / updated) stay */
+  .hstat { flex-direction: row; gap: 6px; align-items: baseline; }
+  .btn { min-height: 44px; padding: 10px 16px; }  /* comfortable touch target */
 }
 
 /* ---------- reduced motion ---------- */
