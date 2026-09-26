@@ -1,13 +1,20 @@
 {
-  "updated": "2026-09-26T13:47:59+00:00",
+  "updated": "2026-09-26T14:50:56+00:00",
   "missions": [
     {
       "id": "M1",
       "title": "داشبورد زنده TheCore (سایت 2049 + استاتوس ایجنت‌ها)",
       "agent": "سازنده",
-      "status": "in_progress",
-      "evidence": [],
-      "created": "2026-09-26"
+      "status": "done",
+      "evidence": [
+        "dir:/data/workspace/TheCore",
+        "files:index.html css/style.css js/main.js status/*.json README.md fonts/(4)",
+        "verify:HTTP 200 x6 (own probe), node --check OK, fetch+cache-bust+Tehran clock present",
+        "commit:d21e552c5961f92926a4021b9282deb20ca91f37",
+        "live:https://abwlfdlddrwyshyangylys-stack.github.io/TheCore/"
+      ],
+      "created": "2026-09-26",
+      "completed": "2026-09-26T14:23:20+00:00"
     },
     {
       "id": "M2",
@@ -41,9 +48,37 @@
       "id": "M4",
       "title": "سناریوی حافظه: پر کردن سیناپس با خاطرات ساختارمند",
       "agent": "آینه",
-      "status": "todo",
+      "status": "done",
+      "evidence": [
+        "synapse restored: npm i -g synapse-os (local prefix, no root needed)",
+        "memories: 6 total (3 old lessons + 3 core facts); garbage entry deleted; query test OK",
+        "MCP registered: agent.log 14:47:04 'synapse: registered 4 tools mcp__synapse__memory_*'",
+        "config.yaml mcp_servers.synapse added (YAML validated before write)"
+      ],
+      "created": "2026-09-26",
+      "completed": "2026-09-26T14:49:28+00:00"
+    },
+    {
+      "id": "M5",
+      "title": "آزمایشگاه ۳نفره روی داشبورد TheCore (آرام/سخت‌گیر/وتو)",
+      "agent": "آزمایشگاه",
+      "status": "in_progress",
       "evidence": [],
       "created": "2026-09-26"
+    },
+    {
+      "id": "M6",
+      "title": "کرون همگام‌ساز زنده استاتوس (استاتوس → ریپو → Pages هر ۳۰ دقیقه)",
+      "agent": "نگهبان",
+      "status": "done",
+      "evidence": [
+        "script:/data/.hermes/scripts/core_sync.sh (bash -n OK)",
+        "test: 3 runs — change→commit+push silent, no-change→silent, rc=0 all",
+        "remote verified: TheCore main = 342cd42 (ls-remote)",
+        "cron:core-sync job_id=293e7ef71637 every-30m no_agent deliver=local next=15:00Z"
+      ],
+      "created": "2026-09-26",
+      "completed": "2026-09-26T14:50:56+00:00"
     }
   ]
 }
