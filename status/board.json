@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-26T14:50:56+00:00",
+  "updated": "2026-09-26T15:01:35+00:00",
   "missions": [
     {
       "id": "M1",
@@ -63,7 +63,12 @@
       "title": "آزمایشگاه ۳نفره روی داشبورد TheCore (آرام/سخت‌گیر/وتو)",
       "agent": "آزمایشگاه",
       "status": "in_progress",
-      "evidence": [],
+      "evidence": [
+        "round1: AGENT1=FAIL (evidence 0/21 clickable), AGENT2=PASS (4 medium+4 low), AGENT3=PASS (0 secrets, no veto)",
+        "fixes: linkTarget unwrap live:/url:/link: + commit->github; created NaN guard; empty-state on first-fail; mobile header compaction + 44px btn; poll in-flight guard + hidden pause; null-list filter; health boot css",
+        "unit test: 9/9 linkTarget cases PASS (node, real code extracted)",
+        "pending: recheck by lab (round 2)"
+      ],
       "created": "2026-09-26"
     },
     {
