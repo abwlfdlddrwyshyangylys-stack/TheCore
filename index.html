@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="هسته — THE CORE: داشبورد زنده سیستم ایجنت‌ها">
+  <title>هسته — THE CORE</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070b12'/%3E%3Cpath d='M16 5l9 5.5v11L16 27l-9-5.5v-11z' fill='none' stroke='%232de2ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23ff2e9a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- static scanline overlay: no animation cost -->
+  <div class="scanlines" aria-hidden="true"></div>
+  <!-- light particle canvas, 30fps capped, skipped under prefers-reduced-motion -->
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <a class="skip" href="#main">پرش به محتوا</a>
+
+  <header class="hud">
+    <div class="wrap hbar">
+      <h1 class="logo">هسته <b>— THE CORE</b></h1>
+
+      <div class="hstat">
+        <span class="k">تهران</span>
+        <span class="v clock" id="clock" aria-live="off">--:--:--</span>
+      </div>
+
+      <div class="hstat">
+        <span class="k">آخرین به‌روزرسانی</span>
+        <span class="v" id="last-updated">—</span>
+      </div>
+
+      <div class="grow"></div>
+
+      <div class="health" id="health" data-state="boot">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="health-text">در حال راه‌اندازی…</span>
+      </div>
+
+      <button class="btn" id="btn-refresh" type="button">بازخوانی داده</button>
+    </div>
+
+    <div class="wrap bootline" aria-hidden="true">
+      <span class="prompt">&gt;</span>
+      <span id="bootline">CORE//init …</span><span class="caret"></span>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <!-- (b) agent roster -->
+    <section class="panel" aria-labelledby="roster-title">
+      <div class="phead">
+        <h2 id="roster-title">ترکیب ایجنت‌ها</h2>
+        <div class="legend" aria-hidden="true">
+          <span class="lg on">آنلاین</span>
+          <span class="lg boot">در حال راه‌اندازی</span>
+          <span class="lg off">آفلاین</span>
+        </div>
+        <span class="count" id="agents-count"></span>
+      </div>
+      <div class="grid" id="agents" role="list"></div>
+      <p class="empty" id="agents-empty" hidden>داده‌ای دریافت نشد — status/agents.json</p>
+    </section>
+
+    <!-- (c) mission board -->
+    <section class="panel" aria-labelledby="board-title">
+      <div class="phead">
+        <h2 id="board-title">بورد ماموریت‌ها</h2>
+        <div class="legend" aria-hidden="true">
+          <span class="lg todo">انجام‌نشده</span>
+          <span class="lg prog">در حال انجام</span>
+          <span class="lg done">بسته‌شده</span>
+          <span class="lg block">مسدود</span>
+        </div>
+        <span class="count" id="missions-count"></span>
+      </div>
+      <ul class="missions" id="missions" role="list"></ul>
+      <p class="empty" id="missions-empty" hidden>داده‌ای دریافت نشد — status/board.json</p>
+    </section>
+
+    <p class="err" id="error" hidden role="alert"></p>
+  </main>
+
+  <!-- (d) footer charter -->
+  <footer class="foot">
+    <div class="wrap">
+      <p class="charter">«هر ماموریت فقط با اثبات بسته می‌شه»</p>
+      <p class="meta">
+        <span>THE CORE // static living dashboard</span>
+        <span class="sep">•</span>
+        <span>داده: <code>status/agents.json</code> + <code>status/board.json</code></span>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
