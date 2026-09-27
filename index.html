@@ -1,95 +1,161 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="هسته — THE CORE: داشبورد زنده سیستم ایجنت‌ها">
-  <title>هسته — THE CORE</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070b12'/%3E%3Cpath d='M16 5l9 5.5v11L16 27l-9-5.5v-11z' fill='none' stroke='%232de2ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23ff2e9a'/%3E%3C/svg%3E">
+  <meta name="description" content="THE CORE — the living command center for your agent team.">
+  <title>THE CORE</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Cpath d='M16 6.5l8 4.75v9.5L16 25.5l-8-4.75v-9.5z' fill='none' stroke='%23f5b942' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ffcf70'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- static scanline overlay: no animation cost -->
-  <div class="scanlines" aria-hidden="true"></div>
-  <!-- light particle canvas, 30fps capped, skipped under prefers-reduced-motion -->
+  <!-- soft moving aurora gradients + light particles -->
+  <div class="bg" aria-hidden="true">
+    <span class="aurora a1"></span>
+    <span class="aurora a2"></span>
+    <span class="aurora a3"></span>
+  </div>
   <canvas id="fx" aria-hidden="true"></canvas>
 
-  <a class="skip" href="#main">پرش به محتوا</a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
-  <header class="hud">
+  <header class="site-head">
     <div class="wrap hbar">
-      <h1 class="logo">هسته <b>— THE CORE</b></h1>
+      <a class="brand" href="#" id="brand" aria-label="THE CORE home">
+        <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+          <defs>
+            <linearGradient id="g-gold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffe9b3"/>
+              <stop offset=".5" stop-color="#f5b942"/>
+              <stop offset="1" stop-color="#c98a1b"/>
+            </linearGradient>
+          </defs>
+          <path d="M20 4l13.9 8v16L20 36 6.1 28V12z" fill="none" stroke="url(#g-gold)" stroke-width="2.2"/>
+          <path d="M20 12.2l6.9 4.1v8.2L20 28.6l-6.9-4.1v-8.2z" fill="none" stroke="url(#g-gold)" stroke-width="1.4" opacity=".65"/>
+          <circle cx="20" cy="20" r="3.2" fill="#ffcf70"/>
+        </svg>
+        <span class="brand-txt">The<em>Core</em></span>
+      </a>
 
-      <div class="hstat">
-        <span class="k">تهران</span>
-        <span class="v clock" id="clock" aria-live="off">--:--:--</span>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button class="tab is-active" id="tab-showcase" data-tab="showcase" role="tab"
+                aria-selected="true" aria-controls="showcase" data-i18n="nav.showcase">Showcase</button>
+        <button class="tab" id="tab-dashboard" data-tab="dashboard" role="tab"
+                aria-selected="false" aria-controls="dashboard" data-i18n="nav.dashboard">Dashboard</button>
+      </nav>
+
+      <div class="hright">
+        <div class="lang" role="group" aria-label="Language">
+          <button class="langbtn is-active" data-lang="en" type="button">EN</button>
+          <button class="langbtn" data-lang="fa" type="button">فا</button>
+        </div>
+        <span class="clock" id="clock" aria-live="off">--:--:--</span>
       </div>
-
-      <div class="hstat">
-        <span class="k">آخرین به‌روزرسانی</span>
-        <span class="v" id="last-updated">—</span>
-      </div>
-
-      <div class="grow"></div>
-
-      <div class="health" id="health" data-state="boot">
-        <span class="dot" aria-hidden="true"></span>
-        <span id="health-text">در حال راه‌اندازی…</span>
-      </div>
-
-      <button class="btn" id="btn-refresh" type="button">بازخوانی داده</button>
-    </div>
-
-    <div class="wrap bootline" aria-hidden="true">
-      <span class="prompt">&gt;</span>
-      <span id="bootline">CORE//init …</span><span class="caret"></span>
     </div>
   </header>
 
-  <main id="main" class="wrap">
-    <!-- (b) agent roster -->
-    <section class="panel" aria-labelledby="roster-title">
-      <div class="phead">
-        <h2 id="roster-title">ترکیب ایجنت‌ها</h2>
-        <div class="legend" aria-hidden="true">
-          <span class="lg on">آنلاین</span>
-          <span class="lg boot">در حال راه‌اندازی</span>
-          <span class="lg off">آفلاین</span>
+  <main id="main">
+    <!-- ============ VIEW 1: SHOWCASE ============ -->
+    <section class="view" id="showcase" role="tabpanel" aria-labelledby="tab-showcase">
+      <div class="wrap hero">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Agent operations · one screen</p>
+        <h1 class="htitle">
+          <span data-i18n="hero.t1">The core of your</span>
+          <em data-i18n="hero.t2">agent team.</em>
+        </h1>
+        <p class="hsub" data-i18n="hero.sub">THE CORE unites your autonomous agents, their missions and the proof behind every closure — in one living dashboard that never sleeps.</p>
+        <div class="hcta">
+          <button class="btn btn-gold" id="cta-dashboard" type="button" data-i18n="hero.cta">Open the dashboard</button>
         </div>
-        <span class="count" id="agents-count"></span>
       </div>
-      <div class="grid" id="agents" role="list"></div>
-      <p class="empty" id="agents-empty" hidden>داده‌ای دریافت نشد — status/agents.json</p>
+
+      <div class="wrap feats">
+        <article class="feat">
+          <span class="fico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3l7 4v10l-7 4-7-4V7z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></svg>
+          </span>
+          <h3 data-i18n="f1.t">Living roster</h3>
+          <p data-i18n="f1.d">Every unit reports its beat. Online, booting or offline — you always know who is on duty.</p>
+        </article>
+        <article class="feat">
+          <span class="fico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="19.5" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+          <h3 data-i18n="f2.t">Evidence-locked missions</h3>
+          <p data-i18n="f2.d">A mission closes only with proof. Links, commits and job ids — every claim is verifiable.</p>
+        </article>
+        <article class="feat">
+          <span class="fico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 13h4l2.5-6 4 12L16 13h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h3 data-i18n="f3.t">Always-on health</h3>
+          <p data-i18n="f3.d">The core watches itself: freshness, connectivity and status, refreshed every few seconds.</p>
+        </article>
+      </div>
     </section>
 
-    <!-- (c) mission board -->
-    <section class="panel" aria-labelledby="board-title">
-      <div class="phead">
-        <h2 id="board-title">بورد ماموریت‌ها</h2>
-        <div class="legend" aria-hidden="true">
-          <span class="lg todo">انجام‌نشده</span>
-          <span class="lg prog">در حال انجام</span>
-          <span class="lg done">بسته‌شده</span>
-          <span class="lg block">مسدود</span>
+    <!-- ============ VIEW 2: DASHBOARD ============ -->
+    <section class="view" id="dashboard" role="tabpanel" aria-labelledby="tab-dashboard" hidden>
+      <div class="wrap dashbar">
+        <div class="health" id="health" data-state="boot">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="health-text" data-i18n="dash.boot">Starting up…</span>
         </div>
-        <span class="count" id="missions-count"></span>
+        <div class="hstat">
+          <span class="k" data-i18n="dash.updated">Last update</span>
+          <span class="v" id="last-updated">—</span>
+        </div>
+        <button class="btn btn-ghost" id="btn-refresh" type="button" data-i18n="dash.refresh">Refresh data</button>
       </div>
-      <ul class="missions" id="missions" role="list"></ul>
-      <p class="empty" id="missions-empty" hidden>داده‌ای دریافت نشد — status/board.json</p>
-    </section>
 
-    <p class="err" id="error" hidden role="alert"></p>
+      <div class="wrap bootline" aria-hidden="true">
+        <span class="prompt">&gt;</span>
+        <span id="bootline">CORE//init …</span><span class="caret"></span>
+      </div>
+
+      <!-- agent roster -->
+      <section class="panel" aria-labelledby="roster-title">
+        <div class="phead">
+          <h2 id="roster-title" data-i18n="roster.title">Agent roster</h2>
+          <div class="legend" aria-hidden="true">
+            <span class="lg on" data-i18n="roster.on">Online</span>
+            <span class="lg boot" data-i18n="roster.boot">Booting</span>
+            <span class="lg off" data-i18n="roster.off">Offline</span>
+          </div>
+          <span class="count" id="agents-count"></span>
+        </div>
+        <div class="grid" id="agents" role="list"></div>
+        <p class="empty" id="agents-empty" hidden data-i18n="roster.empty">No data received — status/agents.json</p>
+      </section>
+
+      <!-- mission board -->
+      <section class="panel" aria-labelledby="board-title">
+        <div class="phead">
+          <h2 id="board-title" data-i18n="board.title">Mission board</h2>
+          <div class="legend" aria-hidden="true">
+            <span class="lg todo" data-i18n="board.todo">To do</span>
+            <span class="lg prog" data-i18n="board.prog">In progress</span>
+            <span class="lg done" data-i18n="board.done">Closed</span>
+            <span class="lg block" data-i18n="board.block">Blocked</span>
+          </div>
+          <span class="count" id="missions-count"></span>
+        </div>
+        <ul class="missions" id="missions" role="list"></ul>
+        <p class="empty" id="missions-empty" hidden data-i18n="board.empty">No data received — status/board.json</p>
+      </section>
+
+      <p class="err" id="error" hidden role="alert"></p>
+    </section>
   </main>
 
-  <!-- (d) footer charter -->
   <footer class="foot">
     <div class="wrap">
-      <p class="charter">«هر ماموریت فقط با اثبات بسته می‌شه»</p>
+      <p class="charter" data-i18n="foot.charter">“A mission closes only with proof.”</p>
       <p class="meta">
-        <span>THE CORE // static living dashboard</span>
-        <span class="sep">•</span>
-        <span>داده: <code>status/agents.json</code> + <code>status/board.json</code></span>
+        <span>THE CORE</span>
+        <span class="sep">·</span>
+        <span data-i18n="foot.meta">Static living dashboard — data: status/agents.json + status/board.json</span>
       </p>
     </div>
   </footer>
