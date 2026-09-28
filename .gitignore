@@ -1,0 +1,3 @@
+.audit.json
+node_modules/
+*.log
